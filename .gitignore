@@ -1,0 +1,3 @@
+__pycache__/
+/src/comnuoc/calendar/application/data/*
+!/src/comnuoc/calendar/application/data/.gitkeep
