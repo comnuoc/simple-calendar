@@ -284,6 +284,7 @@ class Cli(object):
         defaultDto.dateDay = now["day"]
         defaultDto.startDateHour = defaultDto.endDateHour = now["hour"]
         defaultDto.startDateMinute = defaultDto.endDateMinute = now["minute"]
+        defaultDto.isRecurrent = False
 
         return defaultDto
 
@@ -408,9 +409,17 @@ class Cli(object):
         recurrenceIntervalFreqHint = ", ".join(
             [f"{k}: {v}" for k, v in self.RECURRENCE_FREQS.items()]
         )
+
+        if defaultDto.recurrenceIntervalFreq in self.RECURRENCE_FREQ_SHORTCUTS:
+            defaultFreq = self.RECURRENCE_FREQ_SHORTCUTS[
+                defaultDto.recurrenceIntervalFreq
+            ]
+        else:
+            defaultFreq = None
+
         recurrenceIntervalFreq = self._inputHelper.inputStr(
             message=f"Recurrence Frequency ({recurrenceIntervalFreqHint})",
-            default=self.RECURRENCE_FREQ_SHORTCUTS[defaultDto.recurrenceIntervalFreq],
+            default=defaultFreq,
             validator=lambda val: val.lower() in self.RECURRENCE_FREQS.keys(),
         )
         recurrenceIntervalFreq = recurrenceIntervalFreq.lower()
