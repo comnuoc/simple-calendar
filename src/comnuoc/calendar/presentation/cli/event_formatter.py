@@ -24,7 +24,7 @@ class EventFormatter(object):
         }
 
         if eventDto.isRecurrent:
-            values["Recurrence Interval"] = eventDto.recurrenceInterval
+            values["Recurrence Interval"] = eventDto.recurrenceIntervalHumanText
 
         lines = []
 
@@ -32,4 +32,3 @@ class EventFormatter(object):
             lines.append(label.ljust(leftColWidth, " ") + value)
 
         return "\n".join(lines)
-

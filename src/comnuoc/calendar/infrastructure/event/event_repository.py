@@ -149,10 +149,13 @@ class EventRecurrenceRruleChecker(EventRecurrenceChecker):
                 "The value of event interval should be an instance of dateutil.rrule.rrule"
             )
 
-        # should replace start date and first week day in the rule
+        # Replace start date (with the timezone of the date range) and first week day in the rule
         # in order to ensure the integrity.
         interval = interval.replace(
-            dtstart=event.getDateTimeRange().getRealStartDate(), wkst=self._firstWeekDay
+            dtstart=event.getDateTimeRange()
+            .getRealStartDate()
+            .astimezone(startDateRange.getRealStartDate().tzinfo),
+            wkst=self._firstWeekDay,
         )
 
         occurrences = interval.between(

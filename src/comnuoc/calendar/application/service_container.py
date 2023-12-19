@@ -1,7 +1,10 @@
 import os
 
 from comnuoc.calendar.application.calendar.calendar_service import CalendarService
-from comnuoc.calendar.application.event.event_dto import EventDtoTransformer
+from comnuoc.calendar.application.event.event_dto import (
+    EventDtoTransformer,
+    EventRecurrenceAssembler,
+)
 from comnuoc.calendar.application.event.event_service import EventService
 from comnuoc.calendar.application.setting.setting_service import SettingService
 
@@ -52,6 +55,7 @@ class ServiceContainer(object):
             settings=settingRepository,
             idNormalizer=eventIdNormalizer,
             intervalNormalizer=eventIntervalNormalizer,
+            intervalAssembler=EventRecurrenceAssembler(),
         )
         self._services["event"] = EventService(
             settings=settingRepository,
