@@ -132,7 +132,7 @@ class Cli(object):
                 )
                 print()
         else:
-            print("There is no event on this day")
+            self._inputHelper.printInfoMessage("There is no event on this day")
 
         self.displayMenu()
 
@@ -153,7 +153,7 @@ class Cli(object):
         print()
 
         if event is None:
-            print(f'Event with ID "{id}" is not found')
+            self._inputHelper.printErrorMessage(f'Event with ID "{id}" is not found')
         else:
             print(
                 self._menuFormatter.formatContent(
@@ -176,14 +176,13 @@ class Cli(object):
             eventDto = self._serviceContainer.getEventService().insertEvent(eventDto)
         except Exception as e:
             print()
-            print("Error: " + str(e))
+            self._inputHelper.printErrorMessage(str(e))
             self.displayMenu()
 
             return
 
         print()
-        print("Event has just been added.")
-        print()
+        self._inputHelper.printSuccessMessage("Event has just been added.")
         print(
             self._menuFormatter.formatContent(
                 self._eventFormatter.formatEvent(eventDto), True
@@ -208,7 +207,7 @@ class Cli(object):
         print()
 
         if event is None:
-            print(f'Event with ID "{id}" is not found')
+            self._inputHelper.printErrorMessage(f'Event with ID "{id}" is not found')
             self.displayMenu()
 
             return
@@ -220,14 +219,13 @@ class Cli(object):
             eventDto = self._serviceContainer.getEventService().updateEvent(eventDto)
         except Exception as e:
             print()
-            print("Error: " + str(e))
+            self._inputHelper.printErrorMessage(str(e))
             self.displayMenu()
 
             return
 
         print()
-        print("Event has just been updated.")
-        print()
+        self._inputHelper.printSuccessMessage("Event has just been updated.")
         print(
             self._menuFormatter.formatContent(
                 self._eventFormatter.formatEvent(eventDto), True
@@ -244,18 +242,30 @@ class Cli(object):
 
         id = self._inputHelper.inputNotBlankStr("Event ID")
 
+        print()
+        self._inputHelper.printWarningMessage(
+            "Are you sure you want to delete this event?"
+        )
+        print()
+
+        confirm = self._inputHelper.inputBool("Please confirm", False)
+
+        if not confirm:
+            self.displayMenu()
+
+            return
+
         try:
             deletedEvent = self._serviceContainer.getEventService().deleteEvent(id)
         except Exception as e:
             print()
-            print("Error: " + str(e))
+            self._inputHelper.printErrorMessage(str(e))
             self.displayMenu()
 
             return
 
         print()
-        print("Event has just been deleted.")
-        print()
+        self._inputHelper.printSuccessMessage("Event has just been deleted.")
         print(
             self._menuFormatter.formatContent(
                 self._eventFormatter.formatEvent(deletedEvent), True

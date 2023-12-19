@@ -1,4 +1,5 @@
 from collections.abc import Callable
+from colorama import Fore, Back, Style
 import os
 from typing import Union
 
@@ -94,10 +95,10 @@ class InputHelper(object):
                     if validator(value):
                         break
                     elif errorMessage is not None:
-                        print(errorMessage)
+                        self.printErrorMessage(errorMessage)
             except ValueError:
                 if errorMessage is not None:
-                    print(errorMessage)
+                    self.printErrorMessage(errorMessage)
 
         return value
 
@@ -124,7 +125,7 @@ class InputHelper(object):
                 if validator(value):
                     break
                 elif errorMessage is not None:
-                    print(errorMessage)
+                    self.printErrorMessage(errorMessage)
 
         return value
 
@@ -142,7 +143,7 @@ class InputHelper(object):
         else:
             defaultStr = "n"
 
-        if defaultInMessage:
+        if defaultInMessage and default is not None:
             message = self.messageWithDefault(message, defaultStr)
 
         while True:
@@ -193,9 +194,9 @@ class InputHelper(object):
                         if singleValueValidator(value):
                             values.append(value)
                         else:
-                            print(singleValueErrorMessage)
+                            self.printErrorMessage(singleValueErrorMessage)
                 except ValueError:
-                    print(singleValueErrorMessage)
+                    self.printErrorMessage(singleValueErrorMessage)
 
             if 0 == len(values) and default is not None:
                 if not allowClear:
@@ -207,7 +208,7 @@ class InputHelper(object):
                         values = default
 
             if (valuesValidator is not None) and (not valuesValidator(values)):
-                print(valuesErrorMessage)
+                self.printErrorMessage(valuesErrorMessage)
                 values = []
             else:
                 break
@@ -248,7 +249,7 @@ class InputHelper(object):
                     if singleValueValidator(value):
                         values.append(value)
                     else:
-                        print(singleValueErrorMessage)
+                        self.printErrorMessage(singleValueErrorMessage)
 
             if 0 == len(values) and default is not None:
                 if not allowClear:
@@ -260,7 +261,7 @@ class InputHelper(object):
                         values = default
 
             if (valuesValidator is not None) and (not valuesValidator(values)):
-                print(valuesErrorMessage)
+                self.printErrorMessage(valuesErrorMessage)
                 values = []
             else:
                 break
@@ -276,3 +277,22 @@ class InputHelper(object):
             message = f"{message}: "
 
         return message
+
+    def printErrorMessage(self, message: str) -> None:
+        self.printMessageWithColor(message, Back.RED, Fore.WHITE)
+
+    def printSuccessMessage(self, message: str) -> None:
+        self.printMessageWithColor(message, Back.GREEN, Fore.WHITE)
+
+    def printInfoMessage(self, message: str) -> None:
+        self.printMessageWithColor(message, Back.CYAN, Fore.WHITE)
+
+    def printWarningMessage(self, message: str) -> None:
+        self.printMessageWithColor(message, Back.YELLOW, Fore.BLACK)
+
+    def printMessageWithColor(self, message: str, bgColor: int, fgColor: int) -> None:
+        recLen = len(message) + 2
+        print(bgColor + fgColor + " " * recLen)
+        print(" " + message + " ")
+        print(" " * recLen + Style.RESET_ALL)
+        print()
