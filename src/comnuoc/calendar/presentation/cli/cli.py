@@ -22,21 +22,54 @@ class Cli(object):
         self._inputHelper = InputHelper()
         self._menuFormatter = MenuFormatter()
 
-    def displayMenu(self, clearScreen: bool = False) -> None:
+    def run(self, clearScreen: bool = False) -> None:
+        if clearScreen:
+            self._inputHelper.clearScreen()
+
+        now = self._serviceContainer.getSettingService().getNow()
+
+        print()
+        print(
+            self._menuFormatter.formatTitle(
+                f'Calendar - Today Events - {now["year"]}-{now["month"]}-{now["day"]}'
+            )
+        )
+
+        self._viewDayEvents(now["year"], now["month"], now["day"])
+
+    def _viewDayEvents(self, year: int, month: int, day: int) -> None:
+        events = self._serviceContainer.getEventService().getEventsByDate(
+            year, month, day
+        )
+
+        print()
+
+        if len(events) > 0:
+            for event in events:
+                print(
+                    self._menuFormatter.formatContent(
+                        self._eventFormatter.formatEvent(event), True
+                    )
+                )
+                print()
+        else:
+            self._inputHelper.printInfoMessage("There is no event on this day")
+
+        self._displayMenu()
+
+    def _displayMenu(self) -> None:
         # @todo: implement update settings feature
         options = [
             "1. View month",
             "2. View week",
-            "3. View events",
-            "4. View event detail",
-            "5. Add event",
-            "6. Update event",
-            "7. Delete event",
-            "8. Exit",
+            "3. View today events",
+            "4. View events on a day",
+            "5. View event detail",
+            "6. Add event",
+            "7. Update event",
+            "8. Delete event",
+            "9. Exit",
         ]
-
-        if clearScreen:
-            self._inputHelper.clearScreen()
 
         print()
         print(self._menuFormatter.formatTitle("Calendar"))
@@ -49,14 +82,16 @@ class Cli(object):
         elif 2 == action:
             self._displayWeek()
         elif 3 == action:
-            self._viewEvents()
+            self.run(True)
         elif 4 == action:
-            self._viewEventDetail()
+            self._viewEvents()
         elif 5 == action:
-            self._addEvent()
+            self._viewEventDetail()
         elif 6 == action:
-            self._updateEvent()
+            self._addEvent()
         elif 7 == action:
+            self._updateEvent()
+        elif 8 == action:
             self._deleteEvent()
 
     def _displayMonth(self) -> None:
@@ -80,7 +115,7 @@ class Cli(object):
                 self._calendarFormatter.formatMonth(year, month, monthDates), True, 53
             )
         )
-        self.displayMenu()
+        self._displayMenu()
 
     def _displayWeek(self) -> None:
         self._inputHelper.clearScreen()
@@ -103,7 +138,7 @@ class Cli(object):
                 self._calendarFormatter.formatWeek(year, weekNumber, dates), True, 53
             )
         )
-        self.displayMenu()
+        self._displayMenu()
 
     def _viewEvents(self) -> None:
         self._inputHelper.clearScreen()
@@ -117,24 +152,7 @@ class Cli(object):
         month = self._inputHelper.inputMonth(now["month"])
         day = self._inputHelper.inputDay(now["day"])
 
-        events = self._serviceContainer.getEventService().getEventsByDate(
-            year, month, day
-        )
-
-        print()
-
-        if len(events) > 0:
-            for event in events:
-                print(
-                    self._menuFormatter.formatContent(
-                        self._eventFormatter.formatEvent(event), True
-                    )
-                )
-                print()
-        else:
-            self._inputHelper.printInfoMessage("There is no event on this day")
-
-        self.displayMenu()
+        self._viewDayEvents(year, month, day)
 
     def _viewEventDetail(self) -> None:
         self._inputHelper.clearScreen()
@@ -161,7 +179,7 @@ class Cli(object):
                 )
             )
 
-        self.displayMenu()
+        self._displayMenu()
 
     def _addEvent(self) -> None:
         self._inputHelper.clearScreen()
@@ -177,7 +195,7 @@ class Cli(object):
         except Exception as e:
             print()
             self._inputHelper.printErrorMessage(str(e))
-            self.displayMenu()
+            self._displayMenu()
 
             return
 
@@ -188,7 +206,7 @@ class Cli(object):
                 self._eventFormatter.formatEvent(eventDto), True
             )
         )
-        self.displayMenu()
+        self._displayMenu()
 
     def _updateEvent(self) -> None:
         self._inputHelper.clearScreen()
@@ -208,7 +226,7 @@ class Cli(object):
 
         if event is None:
             self._inputHelper.printErrorMessage(f'Event with ID "{id}" is not found')
-            self.displayMenu()
+            self._displayMenu()
 
             return
 
@@ -220,7 +238,7 @@ class Cli(object):
         except Exception as e:
             print()
             self._inputHelper.printErrorMessage(str(e))
-            self.displayMenu()
+            self._displayMenu()
 
             return
 
@@ -231,7 +249,7 @@ class Cli(object):
                 self._eventFormatter.formatEvent(eventDto), True
             )
         )
-        self.displayMenu()
+        self._displayMenu()
 
     def _deleteEvent(self) -> None:
         self._inputHelper.clearScreen()
@@ -251,7 +269,7 @@ class Cli(object):
         confirm = self._inputHelper.inputBool("Please confirm", False)
 
         if not confirm:
-            self.displayMenu()
+            self._displayMenu()
 
             return
 
@@ -260,7 +278,7 @@ class Cli(object):
         except Exception as e:
             print()
             self._inputHelper.printErrorMessage(str(e))
-            self.displayMenu()
+            self._displayMenu()
 
             return
 
@@ -271,7 +289,7 @@ class Cli(object):
                 self._eventFormatter.formatEvent(deletedEvent), True
             )
         )
-        self.displayMenu()
+        self._displayMenu()
 
     def _createDefaultEventDto(self) -> EventDto:
         now = self._serviceContainer.getSettingService().getNow()
