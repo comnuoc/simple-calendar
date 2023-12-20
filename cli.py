@@ -1,4 +1,4 @@
-from comnuoc.calendar.presentation.cli.cli import Cli
+from comnuoc.calendar.presentation.cli.application import Application
 
-cli = Cli()
-cli.run(True)
+app = Application()
+app.run(True)
