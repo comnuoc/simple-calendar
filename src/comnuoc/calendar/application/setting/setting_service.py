@@ -1,5 +1,9 @@
 import datetime
+import os
+import tarfile
 from typing import Union
+
+from dateutil import zoneinfo
 
 from comnuoc.calendar.domain.util.calendar import CalendarUtil
 
@@ -10,10 +14,14 @@ from comnuoc.calendar.infrastructure.util.setting_repository import (
 
 class SettingService(object):
     def __init__(
-        self, settings: FileSettingRepository, calendarUtil: CalendarUtil
+        self,
+        settings: FileSettingRepository,
+        calendarUtil: CalendarUtil,
+        defaultEventsPath: str,
     ) -> None:
         self._settings = settings
         self._calendarUtil = calendarUtil
+        self._defaultEventsPath = defaultEventsPath
 
     def getTimeZone(self) -> Union[str, None]:
         return self._settings.getTimeZone()
@@ -24,10 +32,13 @@ class SettingService(object):
     def getFirstWeekDay(self) -> int:
         return self._settings.getFirstWeekDay()
 
-    def getEventsFilePath(self) -> Union[str, None]:
-        return self._settings.getEventsFilePath()
+    def getEventsFilePath(self) -> str:
+        return self._settings.getEventsFilePath(self._defaultEventsPath)
 
     def setTimeZone(self, timeZone: Union[str, None]) -> None:
+        if not self._isTimeZoneValid(timeZone):
+            raise ValueError(f'Time zone "{timeZone}" is not valid.')
+
         self._settings.setTimeZone(timeZone)
 
     def setIso8601(self, is8601: bool) -> None:
@@ -37,6 +48,14 @@ class SettingService(object):
         self._settings.setFirstWeekDay(firstWeekDay)
 
     def setEventsFilePath(self, path: str) -> None:
+        dirname = os.path.dirname(path)
+
+        if not os.path.isdir(dirname):
+            raise OSError(f'Invalid events file. "{dirname}" is not a directory.')
+
+        if os.path.isdir(path):
+            raise OSError(f'Invalid events file. "{path}" is a directory.')
+
         self._settings.setEventsFilePath(path)
 
     def getNow(self) -> dict[str, int]:
@@ -78,3 +97,15 @@ class SettingService(object):
             "microsecond": date.microsecond,
             "week": self._calendarUtil.calculateWeekNumber(date.date()),
         }
+
+    def _isTimeZoneValid(self, timeZone: Union[str, None]) -> bool:
+        if timeZone is None:
+            return True
+
+        ziPath = os.path.abspath(os.path.dirname(zoneinfo.__file__))
+        zonesFile = tarfile.TarFile.open(
+            os.path.join(ziPath, "dateutil-zoneinfo.tar.gz")
+        )
+        zoneNames = zonesFile.getnames()
+
+        return timeZone in zoneNames

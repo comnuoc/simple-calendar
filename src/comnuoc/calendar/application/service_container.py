@@ -23,20 +23,24 @@ from comnuoc.calendar.infrastructure.util.setting_repository import (
 
 
 class ServiceContainer(object):
-    def __init__(self) -> None:
+    def __init__(self, settingsPath: str = None) -> None:
         # @todo: lazy initialize services
         self._services = {}
         dirName = os.path.dirname(__file__)
-        settingsPath = os.path.join(dirName, "data", "settings.ini")
 
-        eventsPath = os.path.join(dirName, "data", "events.csv")
+        if settingsPath is None:
+            settingsPath = os.path.join(dirName, "data", "settings.ini")
+
+        settingRepository = FileSettingRepository(settingsPath)
+
+        defaultEventsPath = os.path.join(dirName, "data", "events.csv")
+        eventsPath = settingRepository.getEventsFilePath(defaultEventsPath)
 
         # write file if not exist
         if not os.path.isfile(eventsPath):
             with open(eventsPath, "w") as fp:
                 pass
 
-        settingRepository = FileSettingRepository(settingsPath)
         eventIdNormalizer = EventIdUuidNormalizer()
         eventIntervalNormalizer = EventIntervalRruleNormalizer()
         eventNormalizer = EventNormalizer(
@@ -72,7 +76,11 @@ class ServiceContainer(object):
             calendarUtil=calendarUtil,
             eventRepository=eventRepository,
         )
-        self._services["setting"] = SettingService(settingRepository, calendarUtil)
+        self._services["setting"] = SettingService(
+            settings=settingRepository,
+            calendarUtil=calendarUtil,
+            defaultEventsPath=defaultEventsPath,
+        )
 
     def getEventService(self) -> EventService:
         return self._services["event"]

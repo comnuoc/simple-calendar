@@ -6,6 +6,9 @@ from comnuoc.calendar.presentation.cli.controller.calendar_controller import (
 from comnuoc.calendar.presentation.cli.controller.event_controller import (
     EventController,
 )
+from comnuoc.calendar.presentation.cli.controller.setting_controller import (
+    SettingController,
+)
 
 from comnuoc.calendar.presentation.cli.helper.calendar_formatter import (
     CalendarFormatter,
@@ -40,6 +43,11 @@ class Application(object):
             eventFormatter=EventFormatter(),
             recurrenceEventInputHelper=RecurrenceEventInputHelper(self._inputHelper),
         )
+        self._settingController = SettingController(
+            inputHelper=self._inputHelper,
+            menuFormatter=self._menuFormatter,
+            settingService=settingService,
+        )
 
     def run(self, clearScreen: bool = False) -> None:
         if clearScreen:
@@ -51,15 +59,16 @@ class Application(object):
     def _displayMenu(self, clearScreen: bool = False) -> None:
         # @todo: implement update settings feature
         options = [
-            "1. View month",
-            "2. View week",
-            "3. View today events",
-            "4. View events on a day",
-            "5. View event detail",
-            "6. Add event",
-            "7. Update event",
-            "8. Delete event",
-            "9. Exit",
+            " 1  View month",
+            " 2. View week",
+            " 3. View today events",
+            " 4. View events on a day",
+            " 5. View event detail",
+            " 6. Add event",
+            " 7. Update event",
+            " 8. Delete event",
+            " 9. Update settings",
+            "10. Exit",
         ]
 
         print()
@@ -88,6 +97,10 @@ class Application(object):
             self._eventController.updateEvent()
         elif 8 == action:
             self._eventController.deleteEvent()
+        elif 9 == action:
+            self._settingController.updateSettings()
+            # restart application in order to use new settings
+            self.__init__()
         else:
             return
 

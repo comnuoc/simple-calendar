@@ -1,7 +1,6 @@
 import calendar
 import configparser
 import datetime
-from re import sub
 from typing import Union
 
 from dateutil import tz
@@ -22,6 +21,7 @@ class FileSettingRepository(SettingRepository):
         self._filePath = filePath
         self._section = section
         self._config = configparser.ConfigParser()
+        self._config[section] = {}
         self._config.read(filePath)
         self._settingTimeZone = settingTimeZone
         self._settingIso8601 = settingIso8601
@@ -32,7 +32,7 @@ class FileSettingRepository(SettingRepository):
         return self._config.get(self._section, key, fallback=default)
 
     def set(self, key: str, value: str) -> None:
-        self.setMultiple({key, value})
+        self.setMultiple({key: value})
 
     def getMultiple(self, keys: list[str]) -> dict[str, str]:
         return {key: self._get(key) for key in keys}
