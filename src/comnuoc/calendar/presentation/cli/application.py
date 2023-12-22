@@ -46,9 +46,9 @@ class Application(object):
             self._inputHelper.clearScreen()
 
         self._eventController.displayTodayEvents()
-        self._displayMenu()
+        self._displayMenu(clearScreen)
 
-    def _displayMenu(self) -> None:
+    def _displayMenu(self, clearScreen: bool = False) -> None:
         # @todo: implement update settings feature
         options = [
             "1. View month",
@@ -69,7 +69,8 @@ class Application(object):
 
         action = self._inputHelper.inputInt("Choose your action")
 
-        self._inputHelper.clearScreen()
+        if clearScreen:
+            self._inputHelper.clearScreen()
 
         if 1 == action:
             self._calendarController.displayMonth()
@@ -90,4 +91,4 @@ class Application(object):
         else:
             return
 
-        self._displayMenu()
+        self._displayMenu(clearScreen)
