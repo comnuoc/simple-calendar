@@ -49,14 +49,29 @@ class EventDto(object):
         # Values in list are 'MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'
         # or '+1MO', 'MO(+1)': first Monday
         # or '-1MO', 'MO(-1)': last Monday
+        # Only be specified when freq is YEARLY or MONTHLY, or WEEKLY
+        # No numberic value when freq is WEEKLY
         self.recurrenceIntervalByWeekDay: Union[list[str], None] = None
 
         # The month days to apply the recurrence to.
-        # Values in list are '1', '2', '3', ..., '31'
+        # Values in list are 1, 2, 3, ..., 31
+        # or -31, -30, ..., -1
+        # -10: the tenth to the last day of the month
+        # -1: the last day of the month
+        # Only be specified when freq is YEARLY, MONTHLY
         self.recurrenceIntervalByMonthDay: Union[list[int], None] = None
 
+        # The year days to apply the recurrence to.
+        # Values in list are 1, 2, 3, ..., 366
+        # or -366, -365, ..., -1
+        # -1: represents the last day of the year (December 31st).
+        # -306: represents the 306th to the last day of the year (March 1st).
+        # Only be specified when freq is YEARLY
+        self.recurrenceIntervalByYearDay: Union[list[int], None] = None
+
         # The months to apply the recurrence to.
-        # Values in list are '1', '2', '3', ..., '12'
+        # Values in list are 1, 2, 3, ..., 12
+        # Only be specified when freq is YEARLY
         self.recurrenceIntervalByMonth: Union[list[int], None] = None
 
         self.recurrenceIntervalHumanText: Union[str, None] = None
@@ -69,8 +84,9 @@ class EventRecurrenceAssembler(object):
     BYMONTHDAY = "BYMONTHDAY"
     BYMONTH = "BYMONTH"
     BYDAY = "BYDAY"
-    MULTIPLE_PROPERTIES = [BYWEEKDAY, BYMONTHDAY, BYMONTH]
-    INT_PROPERTIES = [INTERVAL, BYMONTHDAY, BYMONTH]
+    BYYEARDAY = "BYYEARDAY"
+    MULTIPLE_PROPERTIES = [BYWEEKDAY, BYMONTHDAY, BYMONTH, BYYEARDAY]
+    INT_PROPERTIES = [INTERVAL, BYMONTHDAY, BYMONTH, BYYEARDAY]
 
     def assemble(
         self, parts: dict[str, Union[str, int, list[str], list[int], None]]
@@ -216,6 +232,11 @@ class EventDtoTransformer(object):
                 EventRecurrenceAssembler.BYMONTHDAY
             ]
 
+        if EventRecurrenceAssembler.BYYEARDAY in recurrenceIntervalParts:
+            dto.recurrenceIntervalByYearDay = recurrenceIntervalParts[
+                EventRecurrenceAssembler.BYYEARDAY
+            ]
+
         if EventRecurrenceAssembler.BYMONTH in recurrenceIntervalParts:
             dto.recurrenceIntervalByMonth = recurrenceIntervalParts[
                 EventRecurrenceAssembler.BYMONTH
@@ -265,6 +286,7 @@ class EventDtoTransformer(object):
                         EventRecurrenceAssembler.INTERVAL: dto.recurrenceIntervalInterval,
                         EventRecurrenceAssembler.BYWEEKDAY: dto.recurrenceIntervalByWeekDay,
                         EventRecurrenceAssembler.BYMONTHDAY: dto.recurrenceIntervalByMonthDay,
+                        EventRecurrenceAssembler.BYYEARDAY: dto.recurrenceIntervalByYearDay,
                         EventRecurrenceAssembler.BYMONTH: dto.recurrenceIntervalByMonth,
                     }
                 )
