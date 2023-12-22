@@ -41,14 +41,19 @@ class ServiceContainer(object):
             with open(eventsPath, "w") as fp:
                 pass
 
+        calendarUtil = CalendarUtil(
+            iso8601=settingRepository.getIso8601(),
+            firstWeekDay=settingRepository.getFirstWeekDay(),
+        )
         eventIdNormalizer = EventIdUuidNormalizer()
         eventIntervalNormalizer = EventIntervalRruleNormalizer()
         eventNormalizer = EventNormalizer(
             idNormalizer=eventIdNormalizer, intervalNormalizer=eventIntervalNormalizer
         )
         eventIdGenerator = EventIdUuidGenerator()
-        firstWeekDay = settingRepository.getFirstWeekDay()
-        eventRecurrenceChecker = EventRecurrenceRruleChecker(firstWeekDay)
+        eventRecurrenceChecker = EventRecurrenceRruleChecker(
+            calendarUtil.getFirstWeekDay()
+        )
         eventRepository = CsvEventRepository(
             idGenerator=eventIdGenerator,
             normalizer=eventNormalizer,
@@ -66,10 +71,6 @@ class ServiceContainer(object):
             idNormalizer=eventIdNormalizer,
             repository=eventRepository,
             dtoTransformer=eventDtoTransformer,
-        )
-
-        calendarUtil = CalendarUtil(
-            iso8601=settingRepository.getIso8601(), firstWeekDay=firstWeekDay
         )
         self._services["calendar"] = CalendarService(
             settings=settingRepository,

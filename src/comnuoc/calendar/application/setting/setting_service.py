@@ -30,7 +30,7 @@ class SettingService(object):
         return self._settings.getIso8601()
 
     def getFirstWeekDay(self) -> int:
-        return self._settings.getFirstWeekDay()
+        return self._calendarUtil.getFirstWeekDay()
 
     def getEventsFilePath(self) -> str:
         return self._settings.getEventsFilePath(self._defaultEventsPath)

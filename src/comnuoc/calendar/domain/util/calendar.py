@@ -30,7 +30,7 @@ class CalendarUtil(object):
         the second item is a list of datetime.date values.
         """
         return [
-            (self.calculateWeekNumber(weekDates[0]), weekDates)
+            (self.calculateWeekNumber(weekDates[-1]), weekDates)
             for weekDates in self._calendar.monthdatescalendar(year, month)
         ]
 
@@ -40,10 +40,19 @@ class CalendarUtil(object):
         Return tuple represents a week. The first item in tuple is the week number,
         the second item is a list of datetime.date values.
         """
+        weekNumber = week
+
+        if not self._iso8601:
+            firstDateInYear = datetime.date(year=year, month=1, day=1)
+            firstWeekNo = int(firstDateInYear.strftime(self._getWeekNumberFormat()))
+
+            if 0 == firstWeekNo:
+                weekNumber = week - 1
+
         yearFormat, weekNumberFormat, weekDayFormat, weekDays = self._getFormats()
         dateFormat = f"{yearFormat}-W{weekNumberFormat}-{weekDayFormat}"
         dates = []
-        weekNumber = str(week).zfill(2)
+        weekNumber = str(weekNumber).zfill(2)
         year = str(year).zfill(4)
 
         for weekDay in weekDays:
@@ -62,14 +71,30 @@ class CalendarUtil(object):
         year = date.year
 
         if (
-            date.month == 1 and week >= 52
+            1 == date.month and week >= 52
         ):  # in case of the week belongs to previous year
             year -= 1
+        elif 12 == date.month and 1 == week:
+            # in case of the week belongs to next year
+            year += 1
 
         return self.getWeekDates(year, week)
 
     def calculateWeekNumber(self, date: datetime.date) -> int:
-        return int(date.strftime(self._getWeekNumberFormat()))
+        weekNo = int(date.strftime(self._getWeekNumberFormat()))
+
+        if self._iso8601:
+            return weekNo
+
+        firstDateInYear = datetime.date(year=date.year, day=1, month=1)
+        firstWeekNo = int(firstDateInYear.strftime(self._getWeekNumberFormat()))
+
+        if 0 != firstWeekNo:
+            return weekNo
+
+        weekNo += 1  # first week should contain the January 1st
+
+        return weekNo
 
     def _getWeekNumberFormat(self) -> str:
         yearFormat, weekNumberFormat, weekDayFormat, weekDays = self._getFormats()
