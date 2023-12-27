@@ -293,7 +293,7 @@ class CalendarTest(unittest.TestCase):
 
     def __getCalculateWeekNumberIso8601WeekStartsWithMondayData(
         self,
-    ) -> tuple[datetime.date, int]:
+    ) -> Iterable[tuple[datetime.date, int]]:
         yield datetime.date(2022, 1, 2), 52
         yield datetime.date(2022, 12, 26), 52
         yield datetime.date(2023, 1, 1), 52
@@ -305,7 +305,7 @@ class CalendarTest(unittest.TestCase):
 
     def __getCalculateWeekNumberWeekStartsWithMondayData(
         self,
-    ) -> tuple[datetime.date, int]:
+    ) -> Iterable[tuple[datetime.date, int]]:
         yield datetime.date(2022, 1, 2), 1
         yield datetime.date(2022, 12, 25), 52
         yield datetime.date(2022, 12, 26), 53
@@ -318,7 +318,7 @@ class CalendarTest(unittest.TestCase):
 
     def __getCalculateWeekNumberWeekStartsWithSundayData(
         self,
-    ) -> tuple[datetime.date, int]:
+    ) -> Iterable[tuple[datetime.date, int]]:
         yield datetime.date(2022, 1, 2), 2
         yield datetime.date(2022, 12, 26), 53
         yield datetime.date(2023, 1, 1), 1
