@@ -34,6 +34,7 @@ class RecurrenceEventInputHelper(object):
         if (
             (defaultDto.recurrenceIntervalByWeekDay is not None)
             or (defaultDto.recurrenceIntervalByMonthDay is not None)
+            or (defaultDto.recurrenceIntervalByYearDay is not None)
             or (defaultDto.recurrenceIntervalByMonth is not None)
         ):
             defaultRepeatChoice = 6
