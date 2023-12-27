@@ -92,7 +92,9 @@ class CalendarUtil(object):
         if 0 != firstWeekNo:
             return weekNo
 
-        weekNo += 1  # first week should contain the January 1st
+        # First week should contain the January 1st
+        # @todo: implement in other week system, first week should contain the January 4th
+        weekNo += 1
 
         return weekNo
 

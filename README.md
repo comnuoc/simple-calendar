@@ -34,3 +34,9 @@ poetry run python cli.py
 
 ## Documentation
 * [Structure](./docs/structure.md)
+
+
+## Testing
+```
+poetry run python -m unittest discover -s src/comnuoc/calendar -p "*_test.py" -v
+```
