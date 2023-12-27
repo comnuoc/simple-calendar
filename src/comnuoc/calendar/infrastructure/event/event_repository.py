@@ -35,7 +35,7 @@ class CsvEventRepository(EventRepository):
         self._encoding = encoding
 
     def find(self, id: EventId) -> Union[Event, None]:
-        events = self._readEvents()
+        events = self.__readEvents()
 
         try:
             for event in events:
@@ -47,7 +47,7 @@ class CsvEventRepository(EventRepository):
         return None
 
     def findByStartDate(self, startDateRange: DateTimeRange) -> Iterable[Event]:
-        events = self._readEvents()
+        events = self.__readEvents()
 
         try:
             for event in events:
@@ -63,7 +63,7 @@ class CsvEventRepository(EventRepository):
             events.close()  # as https://peps.python.org/pep-0533/
 
     def hasEventInRange(self, startDateRange: DateTimeRange) -> bool:
-        events = self._readEvents()
+        events = self.__readEvents()
 
         try:
             for event in events:
@@ -86,15 +86,15 @@ class CsvEventRepository(EventRepository):
             writer.writerow(self._normalizer.normalize(event))
 
     def update(self, newEvent: Event) -> None:
-        self._update(newEvent, False)
+        self.__update(newEvent, False)
 
     def delete(self, deletedEvent: Event) -> None:
-        self._update(deletedEvent, True)
+        self.__update(deletedEvent, True)
 
     def generateId(self) -> EventId:
         return self._idGenerator.generate()
 
-    def _readEvents(self) -> Generator[Event, None, None]:
+    def __readEvents(self) -> Generator[Event, None, None]:
         with open(self._filePath, newline="", encoding=self._encoding) as csvFile:
             reader = csv.reader(csvFile, dialect=self._dialectName)
 
@@ -103,14 +103,14 @@ class CsvEventRepository(EventRepository):
 
                 yield event
 
-    def _update(self, updatedEvent: Event, isDeleted: bool = False) -> None:
+    def __update(self, updatedEvent: Event, isDeleted: bool = False) -> None:
         tempFile = NamedTemporaryFile(
             mode="w", newline="", delete=False, encoding=self._encoding
         )
 
         with tempFile:
             writer = csv.writer(tempFile, dialect=self._dialectName)
-            events = self._readEvents()
+            events = self.__readEvents()
 
             try:
                 for event in events:

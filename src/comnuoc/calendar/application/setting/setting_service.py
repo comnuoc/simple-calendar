@@ -36,7 +36,7 @@ class SettingService(object):
         return self._settings.getEventsFilePath(self._defaultEventsPath)
 
     def setTimeZone(self, timeZone: Union[str, None]) -> None:
-        if not self._isTimeZoneValid(timeZone):
+        if not self.__isTimeZoneValid(timeZone):
             raise ValueError(f'Time zone "{timeZone}" is not valid.')
 
         self._settings.setTimeZone(timeZone)
@@ -61,7 +61,7 @@ class SettingService(object):
     def getNow(self) -> dict[str, int]:
         date = datetime.datetime.now(self._settings.getTzInfo())
 
-        return self._createDateInfoResponse(date)
+        return self.__createDateInfoResponse(date)
 
     def getDateInfo(
         self,
@@ -84,9 +84,9 @@ class SettingService(object):
             tzinfo=self._settings.getTzInfo(),
         )
 
-        return self._createDateInfoResponse(date)
+        return self.__createDateInfoResponse(date)
 
-    def _createDateInfoResponse(self, date: datetime.datetime) -> dict[str, int]:
+    def __createDateInfoResponse(self, date: datetime.datetime) -> dict[str, int]:
         return {
             "year": date.year,
             "month": date.month,
@@ -98,7 +98,7 @@ class SettingService(object):
             "week": self._calendarUtil.calculateWeekNumber(date.date()),
         }
 
-    def _isTimeZoneValid(self, timeZone: Union[str, None]) -> bool:
+    def __isTimeZoneValid(self, timeZone: Union[str, None]) -> bool:
         if timeZone is None:
             return True
 

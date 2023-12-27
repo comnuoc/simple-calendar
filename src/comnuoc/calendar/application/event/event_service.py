@@ -30,7 +30,7 @@ class EventService(object):
         self._dtoTransformer = dtoTransformer
 
     def getEvent(self, id: str) -> Union[EventDto, None]:
-        event = self._getEventById(id, False)
+        event = self.__getEventById(id, False)
 
         if event is None:
             return None
@@ -66,7 +66,7 @@ class EventService(object):
         if dto.id is None or "" == dto.id:
             raise KeyError(f"Event ID is required")
 
-        event = self._getEventById(dto.id, True)
+        event = self.__getEventById(dto.id, True)
 
         newEvent = self._dtoTransformer.createEventFromDto(dto, event.getId())
 
@@ -75,13 +75,13 @@ class EventService(object):
         return self._dtoTransformer.createDtoFromEvent(newEvent)
 
     def deleteEvent(self, id: str) -> EventDto:
-        event = self._getEventById(id, True)
+        event = self.__getEventById(id, True)
 
         self._repository.delete(event)
 
         return self._dtoTransformer.createDtoFromEvent(event)
 
-    def _getEventById(
+    def __getEventById(
         self, id: str, throwExceptionIfNotFound: bool = False
     ) -> Union[Event, None]:
         eventId = self._idNormalizer.denormalize(id)

@@ -87,23 +87,23 @@ class RecurrenceEventInputHelper(object):
             eventDto.recurrenceIntervalFreq = "YEARLY"
             eventDto.recurrenceIntervalInterval = 1
         else:
-            self._inputEventRecurrenceCustom(eventDto, defaultDto)
+            self.__inputEventRecurrenceCustom(eventDto, defaultDto)
 
-    def _inputEventRecurrenceCustom(
+    def __inputEventRecurrenceCustom(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
         print()
 
-        self._inputEventRecurrenceFreq(eventDto, defaultDto)
+        self.__inputEventRecurrenceFreq(eventDto, defaultDto)
 
         if "WEEKLY" == eventDto.recurrenceIntervalFreq:
-            self._inputEventRecurrenceWeekly(eventDto, defaultDto)
+            self.__inputEventRecurrenceWeekly(eventDto, defaultDto)
         elif "MONTHLY" == eventDto.recurrenceIntervalFreq:
-            self._inputEventRecurrenceMonthly(eventDto, defaultDto)
+            self.__inputEventRecurrenceMonthly(eventDto, defaultDto)
         elif "YEARLY" == eventDto.recurrenceIntervalFreq:
-            self._inputEventRecurrenceYearly(eventDto, defaultDto)
+            self.__inputEventRecurrenceYearly(eventDto, defaultDto)
 
-    def _inputEventRecurrenceFreq(
+    def __inputEventRecurrenceFreq(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
         recurrenceIntervalFreqHint = ", ".join(
@@ -131,26 +131,26 @@ class RecurrenceEventInputHelper(object):
             validator=lambda val: val > 0,
         )
 
-    def _inputEventRecurrenceWeekly(
+    def __inputEventRecurrenceWeekly(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
-        self._inputEventRecurrenceByWeekDay(eventDto, defaultDto)
+        self.__inputEventRecurrenceByWeekDay(eventDto, defaultDto)
 
-    def _inputEventRecurrenceMonthly(
+    def __inputEventRecurrenceMonthly(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
-        self._inputEventRecurrenceByMonthDay(eventDto, defaultDto)
-        self._inputEventRecurrenceByWeekDay(eventDto, defaultDto)
+        self.__inputEventRecurrenceByMonthDay(eventDto, defaultDto)
+        self.__inputEventRecurrenceByWeekDay(eventDto, defaultDto)
 
-    def _inputEventRecurrenceYearly(
+    def __inputEventRecurrenceYearly(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
-        self._inputEventRecurrenceByYearDay(eventDto, defaultDto)
-        self._inputEventRecurrenceByMonth(eventDto, defaultDto)
-        self._inputEventRecurrenceByMonthDay(eventDto, defaultDto)
-        self._inputEventRecurrenceByWeekDay(eventDto, defaultDto)
+        self.__inputEventRecurrenceByYearDay(eventDto, defaultDto)
+        self.__inputEventRecurrenceByMonth(eventDto, defaultDto)
+        self.__inputEventRecurrenceByMonthDay(eventDto, defaultDto)
+        self.__inputEventRecurrenceByWeekDay(eventDto, defaultDto)
 
-    def _inputEventRecurrenceByWeekDay(
+    def __inputEventRecurrenceByWeekDay(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
         weekDaysMessage = [
@@ -190,7 +190,7 @@ class RecurrenceEventInputHelper(object):
             val.upper() for val in recurrenceIntervalByWeekDay
         ]
 
-    def _inputEventRecurrenceByMonthDay(
+    def __inputEventRecurrenceByMonthDay(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
         message = [
@@ -211,7 +211,7 @@ class RecurrenceEventInputHelper(object):
             defaultMessage="Default month days",
         )
 
-    def _inputEventRecurrenceByMonth(
+    def __inputEventRecurrenceByMonth(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
         print()
@@ -225,13 +225,13 @@ class RecurrenceEventInputHelper(object):
             defaultMessage="Default months",
         )
 
-    def _inputEventRecurrenceByYearDay(
+    def __inputEventRecurrenceByYearDay(
         self, eventDto: EventDto, defaultDto: EventDto
     ) -> None:
         message = [
             "The year days to apply the recurrence to:",
             "Valid values are 1 to 366 or -366 to -1.",
-            "-1: represents the last day of the year (December 31st)."
+            "-1: represents the last day of the year (December 31st).",
             "-306: represents the 306th to the last day of the year (March 1st).",
         ]
 

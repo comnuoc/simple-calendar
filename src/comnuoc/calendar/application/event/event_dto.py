@@ -94,7 +94,7 @@ class EventRecurrenceAssembler(object):
         ruleParts = {}
 
         for key, val in parts.items():
-            if self._isEmpty(val):
+            if self.__isEmpty(val):
                 continue
 
             upperCaseKey = key.upper()
@@ -125,7 +125,7 @@ class EventRecurrenceAssembler(object):
         for part in parts:
             splitParts = part.split("=")
 
-            if (2 == len(splitParts)) and (not self._isEmpty(splitParts[1])):
+            if (2 == len(splitParts)) and (not self.__isEmpty(splitParts[1])):
                 upperCaseKey = splitParts[0].upper()
 
                 if self.BYDAY == upperCaseKey:
@@ -145,7 +145,7 @@ class EventRecurrenceAssembler(object):
 
         return ruleParts
 
-    def _isEmpty(self, val: Union[str, int, list, None]) -> bool:
+    def __isEmpty(self, val: Union[str, int, list, None]) -> bool:
         if val is None:
             return True
 
@@ -245,7 +245,7 @@ class EventDtoTransformer(object):
         r = RecurringEvent()
         dto.recurrenceIntervalHumanText = r.format(
             self._intervalNormalizer.normalize(
-                self._ensureRecurrenceIntervalIntegrity(
+                self.__ensureRecurrenceIntervalIntegrity(
                     event.getRecurrenceInterval(),
                     startDate,
                 )
@@ -291,7 +291,7 @@ class EventDtoTransformer(object):
                     }
                 )
             )
-            recurrenceInterval = self._ensureRecurrenceIntervalIntegrity(
+            recurrenceInterval = self.__ensureRecurrenceIntervalIntegrity(
                 recurrenceInterval, startDate
             )
         else:
@@ -305,7 +305,7 @@ class EventDtoTransformer(object):
             recurrenceInterval=recurrenceInterval,
         )
 
-    def _ensureRecurrenceIntervalIntegrity(
+    def __ensureRecurrenceIntervalIntegrity(
         self, interval: EventInterval, startDate: datetime.datetime
     ) -> EventInterval:
         rule = interval.getInterval()

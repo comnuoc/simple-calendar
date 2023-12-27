@@ -37,7 +37,7 @@ class EventController(object):
             )
         )
 
-        self._printDayEvents(now["year"], now["month"], now["day"])
+        self.__printDayEvents(now["year"], now["month"], now["day"])
 
     def displayDayEvents(self) -> None:
         print()
@@ -49,7 +49,7 @@ class EventController(object):
         month = self._inputHelper.inputMonth(now["month"])
         day = self._inputHelper.inputDay(now["day"])
 
-        self._printDayEvents(year, month, day)
+        self.__printDayEvents(year, month, day)
 
     def displayEventDetail(self) -> None:
         print()
@@ -79,7 +79,7 @@ class EventController(object):
         print(self._menuFormatter.formatTitle("Calendar - Add Event"))
         print()
 
-        eventDto = self._inputEvent(self._createDefaultEventDto())
+        eventDto = self.__inputEvent(self.__createDefaultEventDto())
 
         try:
             eventDto = self._eventService.insertEvent(eventDto)
@@ -116,7 +116,7 @@ class EventController(object):
 
             return
 
-        eventDto = self._inputEvent(event)
+        eventDto = self.__inputEvent(event)
         eventDto.id = event.id
 
         try:
@@ -169,7 +169,7 @@ class EventController(object):
             )
         )
 
-    def _printDayEvents(self, year: int, month: int, day: int) -> None:
+    def __printDayEvents(self, year: int, month: int, day: int) -> None:
         events = self._eventService.getEventsByDate(year, month, day)
 
         print()
@@ -185,7 +185,7 @@ class EventController(object):
         else:
             self._inputHelper.printInfoMessage("There is no event on this day")
 
-    def _createDefaultEventDto(self) -> EventDto:
+    def __createDefaultEventDto(self) -> EventDto:
         now = self._settingService.getNow()
 
         defaultDto = EventDto()
@@ -200,7 +200,7 @@ class EventController(object):
 
         return defaultDto
 
-    def _inputEvent(self, defaultDto: EventDto) -> EventDto:
+    def __inputEvent(self, defaultDto: EventDto) -> EventDto:
         eventDto = EventDto()
 
         eventDto.title = self._inputHelper.inputNotBlankStr("Title", defaultDto.title)

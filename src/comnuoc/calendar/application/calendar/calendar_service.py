@@ -32,16 +32,16 @@ class CalendarService(object):
         weekDatesTuples = self._calendarUtil.getMonthDates(year, month)
 
         for weekDatesTuple in weekDatesTuples:
-            monthDates.append(self._createWeekDatesResponse(weekDatesTuple))
+            monthDates.append(self.__createWeekDatesResponse(weekDatesTuple))
 
         return monthDates
 
     def getWeekDates(self, year: int, week: int) -> WeekDatesResponse:
-        return self._createWeekDatesResponse(
+        return self.__createWeekDatesResponse(
             self._calendarUtil.getWeekDates(year, week)
         )
 
-    def _createWeekDatesResponse(
+    def __createWeekDatesResponse(
         self, weekDates: CalendarUtil.WeekDatesTuple
     ) -> WeekDatesResponse:
         weekNumber, dates = weekDates
@@ -50,14 +50,14 @@ class CalendarService(object):
                 date.year,
                 date.month,
                 date.day,
-                self._hasDayEvent(year=date.year, month=date.month, day=date.day),
+                self.__hasDayEvent(year=date.year, month=date.month, day=date.day),
             )
             for date in dates
         ]
 
         return (weekNumber, dateTuples)
 
-    def _hasDayEvent(self, year: int, month: int, day: int) -> bool:
+    def __hasDayEvent(self, year: int, month: int, day: int) -> bool:
         startDate = datetime.datetime(
             year=year, month=month, day=day, tzinfo=self._settings.getTzInfo()
         )

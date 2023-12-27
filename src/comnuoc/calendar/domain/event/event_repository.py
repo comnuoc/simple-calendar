@@ -62,7 +62,7 @@ class DictEventRepository(EventRepository):
         self._recurrenceChecker = recurrenceChecker
 
     def find(self, id: EventId) -> Union[Event, None]:
-        normalizedId = self._normalizeId(id)
+        normalizedId = self.__normalizeId(id)
 
         if normalizedId in self._events:
             return self._events[normalizedId]
@@ -94,7 +94,7 @@ class DictEventRepository(EventRepository):
         return False
 
     def insert(self, event: Event) -> None:
-        normalizedId = self._normalizeId(event.getId())
+        normalizedId = self.__normalizeId(event.getId())
 
         self._events[normalizedId] = event
 
@@ -102,7 +102,7 @@ class DictEventRepository(EventRepository):
         self.insert(event)
 
     def delete(self, event: Event) -> None:
-        normalizedId = self._normalizeId(event.getId())
+        normalizedId = self.__normalizeId(event.getId())
 
         if normalizedId in self._events:
             del self._events[normalizedId]
@@ -110,5 +110,5 @@ class DictEventRepository(EventRepository):
     def generateId(self) -> EventId:
         return self._idGenerator.generate()
 
-    def _normalizeId(self, id: EventId) -> str:
+    def __normalizeId(self, id: EventId) -> str:
         return self._idNormalizer.normalize(id)

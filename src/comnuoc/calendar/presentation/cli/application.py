@@ -54,9 +54,9 @@ class Application(object):
             self._inputHelper.clearScreen()
 
         self._eventController.displayTodayEvents()
-        self._displayMenu(clearScreen)
+        self.__displayMenu(clearScreen)
 
-    def _displayMenu(self, clearScreen: bool = False) -> None:
+    def __displayMenu(self, clearScreen: bool = False) -> None:
         # @todo: implement update settings feature
         options = [
             " 1  View month",
@@ -104,4 +104,4 @@ class Application(object):
         else:
             return
 
-        self._displayMenu(clearScreen)
+        self.__displayMenu(clearScreen)

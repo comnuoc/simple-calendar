@@ -44,12 +44,12 @@ class CalendarUtil(object):
 
         if not self._iso8601:
             firstDateInYear = datetime.date(year=year, month=1, day=1)
-            firstWeekNo = int(firstDateInYear.strftime(self._getWeekNumberFormat()))
+            firstWeekNo = int(firstDateInYear.strftime(self.__getWeekNumberFormat()))
 
             if 0 == firstWeekNo:
                 weekNumber = week - 1
 
-        yearFormat, weekNumberFormat, weekDayFormat, weekDays = self._getFormats()
+        yearFormat, weekNumberFormat, weekDayFormat, weekDays = self.__getFormats()
         dateFormat = f"{yearFormat}-W{weekNumberFormat}-{weekDayFormat}"
         dates = []
         weekNumber = str(weekNumber).zfill(2)
@@ -81,13 +81,13 @@ class CalendarUtil(object):
         return self.getWeekDates(year, week)
 
     def calculateWeekNumber(self, date: datetime.date) -> int:
-        weekNo = int(date.strftime(self._getWeekNumberFormat()))
+        weekNo = int(date.strftime(self.__getWeekNumberFormat()))
 
         if self._iso8601:
             return weekNo
 
         firstDateInYear = datetime.date(year=date.year, day=1, month=1)
-        firstWeekNo = int(firstDateInYear.strftime(self._getWeekNumberFormat()))
+        firstWeekNo = int(firstDateInYear.strftime(self.__getWeekNumberFormat()))
 
         if 0 != firstWeekNo:
             return weekNo
@@ -98,12 +98,12 @@ class CalendarUtil(object):
 
         return weekNo
 
-    def _getWeekNumberFormat(self) -> str:
-        yearFormat, weekNumberFormat, weekDayFormat, weekDays = self._getFormats()
+    def __getWeekNumberFormat(self) -> str:
+        yearFormat, weekNumberFormat, weekDayFormat, weekDays = self.__getFormats()
 
         return weekNumberFormat
 
-    def _getFormats(self) -> tuple[str, str, str, list[int]]:
+    def __getFormats(self) -> tuple[str, str, str, list[int]]:
         # @see: https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
         if self._iso8601:
             yearFormat = "%G"

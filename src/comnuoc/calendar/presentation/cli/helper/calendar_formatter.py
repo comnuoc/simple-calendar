@@ -29,7 +29,7 @@ class CalendarFormatter(object):
 
         for weekDatesResponse in weekDates:
             weekNumber, dates = weekDatesResponse
-            content += self._formatWeekInMonth(
+            content += self.__formatWeekInMonth(
                 year, month, weekNumber, dates, width
             ).rstrip()
             content += "\n" * line
@@ -51,7 +51,7 @@ class CalendarFormatter(object):
             + self._textCalendar.formatweekheader(width).rstrip()
         )
         content += "\n" * line
-        content += self._formatWeekInMonth(year, 0, weekNumber, dates, width).rstrip()
+        content += self.__formatWeekInMonth(year, 0, weekNumber, dates, width).rstrip()
         content += "\n" * line
 
         return content
@@ -67,7 +67,7 @@ class CalendarFormatter(object):
 
         return content.center(width)
 
-    def _formatWeekInMonth(
+    def __formatWeekInMonth(
         self,
         year: int,
         month: int,

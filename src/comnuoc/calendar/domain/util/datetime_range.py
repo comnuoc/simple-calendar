@@ -15,7 +15,7 @@ class DateTimeRange(object):
         self._includesStartDate = includesStartDate
         self._includesEndDate = includesEndDate
 
-        if not self._isValidRange():
+        if not self.__isValidRange():
             raise ValueError("End date should be greater than start date")
 
     def getStartDate(self) -> Union[datetime.datetime, None]:
@@ -63,7 +63,7 @@ class DateTimeRange(object):
 
         return True
 
-    def _isValidRange(self) -> bool:
+    def __isValidRange(self) -> bool:
         realStartDate = self.getRealStartDate()
         realEndDate = self.getRealEndDate()
 
